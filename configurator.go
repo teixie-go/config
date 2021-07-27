@@ -18,6 +18,21 @@ func Load(config interface{}, files ...string) (err error) {
 	return
 }
 
+// 加载目录下所有配置文件
+func LoadDir(config interface{}, dir string) (err error) {
+	fileInfos, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return
+	}
+	files := make([]string, 0)
+	for _, f := range fileInfos {
+		if !f.IsDir() {
+			files = append(files, strings.TrimRight(dir, "/")+"/"+f.Name())
+		}
+	}
+	return Load(config, files...)
+}
+
 func loadFile(config interface{}, file string) error {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
